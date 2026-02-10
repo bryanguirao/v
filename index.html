@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💖 Valentine?</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ffe6f0;
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    .card {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: #ff4d88;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .yes img {
+      width: 100px;
+      transition: transform 0.2s;
+    }
+
+    .yes img:hover {
+      transform: scale(1.1);
+    }
+
+    .or-text {
+      font-size: 20px;
+      color: #ff4d88;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Will you be my Valentine? 🤍</h1>
+
+    <div class="buttons">
+      <button class="yes">
+        <img src="ang.jpg" alt="Yes">
+      </button>
+
+      <span class="or-text">or</span>
+
+      <button class="yes">
+        <img src="ang.jpg" alt="Yes">
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const yesBtns = document.querySelectorAll(".yes");
+
+    yesBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.body.innerHTML = `
+          <div style="text-align:center;">
+            <h1 style="color:#ff4d88;">YAYYY 💕</h1>
+            <p>HAHAHA may choice ka pala eh😌</p>
+            <p>See you on Friday 💐</p>
+          </div>
+        `;
+      });
+    });
+  </script>
+
+</body>
+</html>
