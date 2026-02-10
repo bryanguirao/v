@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
+    * { box-sizing: border-box; }
+
     body {
       height: 100vh;
       margin: 0;
@@ -18,19 +20,32 @@
       overflow: hidden;
     }
 
-    .card {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      max-width: 90%;
-      animation: popIn 0.6s ease-out;
+    /* 💗 Floating hearts background */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp 6s linear forwards;
+      opacity: 0.7;
     }
 
-    .hidden {
-      display: none;
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-120vh); opacity: 0; }
     }
+
+    .card {
+      background: white;
+      padding: 30px 35px;
+      border-radius: 22px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      max-width: 90%;
+      animation: popIn 0.6s ease-out;
+      z-index: 2;
+    }
+
+    .hidden { display: none; }
 
     @keyframes popIn {
       from { transform: scale(0.8); opacity: 0; }
@@ -40,11 +55,13 @@
     h1 {
       color: #ff4d88;
       margin-bottom: 30px;
+      min-height: 2.5em;
     }
 
     .buttons {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 20px;
     }
 
@@ -55,7 +72,7 @@
     }
 
     .yes img {
-      width: 100px;
+      width: 95px;
       transition: transform 0.2s;
     }
 
@@ -63,12 +80,19 @@
       transform: scale(1.1);
     }
 
+    /* 😏 sneaky wiggle */
     .sneaky:hover {
-      transform: translateX(15px);
+      animation: wiggle 0.4s infinite;
+    }
+
+    @keyframes wiggle {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
     }
 
     .or-text {
-      font-size: 20px;
+      font-size: 18px;
       color: #ff4d88;
       font-weight: bold;
     }
@@ -76,10 +100,11 @@
     .result {
       text-align: center;
       animation: popIn 0.6s ease-out;
+      z-index: 2;
     }
 
     .hearts {
-      font-size: 40px;
+      font-size: 38px;
       animation: float 1.5s infinite alternate;
     }
 
@@ -87,15 +112,29 @@
       from { transform: translateY(0); }
       to { transform: translateY(-10px); }
     }
+
+    /* 💥 click confetti hearts */
+    .confetti {
+      position: fixed;
+      font-size: 22px;
+      animation: confetti 1.2s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes confetti {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-120px) scale(0.5); opacity: 0; }
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- 🎵 Background Music -->
   <audio id="bgMusic" src="music.mp3" preload="auto" loop></audio>
 
   <div class="card" id="card">
-    <h1>Will you be my Valentine? 🤍</h1>
+    <h1 id="question"></h1>
 
     <div class="buttons">
       <button class="yes">
@@ -118,31 +157,58 @@
   </div>
 
   <script>
+    const questionText = "Will you be my Valentine? 🤍";
+    const questionEl = document.getElementById("question");
+    let i = 0;
+
+    // ✨ typing effect
+    function typeText() {
+      if (i < questionText.length) {
+        questionEl.textContent += questionText.charAt(i);
+        i++;
+        setTimeout(typeText, 60);
+      }
+    }
+    typeText();
+
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = ["💖","💗","💘","💝","💕"][Math.floor(Math.random()*5)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 15 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }, 700);
+
     const yesBtns = document.querySelectorAll(".yes");
     const bgMusic = document.getElementById("bgMusic");
     const card = document.getElementById("card");
     const result = document.getElementById("result");
 
     yesBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", e => {
 
- 
         bgMusic.volume = 0;
-        bgMusic.play().catch(() => {
-          alert("Tap again to enable sound 💕");
-        });
-
+        bgMusic.play().catch(() => {});
         let vol = 0;
-        const fadeIn = setInterval(() => {
-          if (vol < 0.2) {   // 🎚️ FINAL VOLUME (25%)
+        const fade = setInterval(() => {
+          if (vol < 0.25) {
             vol += 0.02;
             bgMusic.volume = vol;
-          } else {
-            clearInterval(fadeIn);
-          }
-        }, 150);
+          } else clearInterval(fade);
+        }, 120);
 
-        // Switch views (keep audio alive)
+        for (let i = 0; i < 12; i++) {
+          const c = document.createElement("div");
+          c.className = "confetti";
+          c.textContent = "💖";
+          c.style.left = e.clientX + (Math.random()*60 - 30) + "px";
+          c.style.top = e.clientY + "px";
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 1200);
+        }
+
         card.classList.add("hidden");
         result.classList.remove("hidden");
       });
@@ -151,5 +217,3 @@
 
 </body>
 </html>
-
-
