@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>💖 Valentine?</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       height: 100vh;
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #ffe6f0;
-      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(135deg, #ffe6f0, #ffd6e8);
+      font-family: 'Fredoka', sans-serif;
+      overflow: hidden;
     }
 
     .card {
@@ -19,6 +24,17 @@
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 90%;
+      animation: popIn 0.6s ease-out;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     h1 {
@@ -28,7 +44,6 @@
 
     .buttons {
       display: flex;
-      align-items: center;
       justify-content: center;
       gap: 20px;
     }
@@ -48,17 +63,39 @@
       transform: scale(1.1);
     }
 
+    .sneaky:hover {
+      transform: translateX(15px);
+    }
+
     .or-text {
       font-size: 20px;
       color: #ff4d88;
       font-weight: bold;
+    }
+
+    .result {
+      text-align: center;
+      animation: popIn 0.6s ease-out;
+    }
+
+    .hearts {
+      font-size: 40px;
+      animation: float 1.5s infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="card">
+  <!-- 🎵 Background Music -->
+  <audio id="bgMusic" src="music.mp3" preload="auto" loop></audio>
+
+  <div class="card" id="card">
     <h1>Will you be my Valentine? 🤍</h1>
 
     <div class="buttons">
@@ -68,24 +105,47 @@
 
       <span class="or-text">or</span>
 
-      <button class="yes">
+      <button class="yes sneaky">
         <img src="ang.jpg" alt="Yes">
       </button>
     </div>
   </div>
 
+  <div class="result hidden" id="result">
+    <h1 style="color:#ff4d88;">YAYYY 💕</h1>
+    <p>HAHAHA may choice ka pala eh 😌</p>
+    <p>See you on Friday 💐</p>
+    <div class="hearts">💖💘💝💗💞</div>
+  </div>
+
   <script>
     const yesBtns = document.querySelectorAll(".yes");
+    const bgMusic = document.getElementById("bgMusic");
+    const card = document.getElementById("card");
+    const result = document.getElementById("result");
 
     yesBtns.forEach(btn => {
       btn.addEventListener("click", () => {
-        document.body.innerHTML = `
-          <div style="text-align:center;">
-            <h1 style="color:#ff4d88;">YAYYY 💕</h1>
-            <p>HAHAHA may choice ka pala eh😌</p>
-            <p>See you on Friday 💐</p>
-          </div>
-        `;
+
+ 
+        bgMusic.volume = 0;
+        bgMusic.play().catch(() => {
+          alert("Tap again to enable sound 💕");
+        });
+
+        let vol = 0;
+        const fadeIn = setInterval(() => {
+          if (vol < 0.10) {   // 🎚️ FINAL VOLUME (25%)
+            vol += 0.02;
+            bgMusic.volume = vol;
+          } else {
+            clearInterval(fadeIn);
+          }
+        }, 150);
+
+        // Switch views (keep audio alive)
+        card.classList.add("hidden");
+        result.classList.remove("hidden");
       });
     });
   </script>
